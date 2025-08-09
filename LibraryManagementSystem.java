@@ -59,7 +59,7 @@ public class LibraryManagementSystem {
             ps.setDouble(4, price);
 
             int rows = ps.executeUpdate();
-            System.out.println(rows > 0 ? "Book Added Successfully!" : "❌ Insert Failed.");
+            System.out.println(rows > 0 ? "Book Added Successfully!" : "Insert Failed.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -87,7 +87,7 @@ public class LibraryManagementSystem {
             ps.setInt(4, id);
 
             int rows = ps.executeUpdate();
-            System.out.println(rows > 0 ? "Book Updated Successfully!" : "❌ Update Failed.");
+            System.out.println(rows > 0 ? "Book Updated Successfully!" : "Update Failed.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -104,9 +104,10 @@ public class LibraryManagementSystem {
             ps.setInt(1, id);
 
             int rows = ps.executeUpdate();
-            System.out.println(rows > 0 ? "Book Deleted Successfully!" : "❌ Delete Failed.");
+            System.out.println(rows > 0 ? "Book Deleted Successfully!" : " Delete Failed.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 }
+
