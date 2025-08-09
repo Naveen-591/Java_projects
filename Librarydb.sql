@@ -1,0 +1,10 @@
+CREATE DATABASE librarydb;
+
+USE librarydb;
+
+CREATE TABLE books (
+    id INT PRIMARY KEY,  
+    title VARCHAR(100) NOT NULL,
+    author VARCHAR(100) NOT NULL,
+    price DOUBLE NOT NULL
+);
