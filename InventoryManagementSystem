@@ -1,0 +1,128 @@
+package projects;
+
+import java.sql.*;
+import java.util.Scanner;
+
+public class InventoryManagementSystem {
+    static final String URL = "jdbc:mysql://localhost:3306/inventory_db";
+    static final String USER = "root";           
+    static final String PASS = "pass123";   
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        try (Connection con = DriverManager.getConnection(URL, USER, PASS)) {
+            while (true) {
+                System.out.println("\n--- Inventory Management System ---");
+                System.out.println("1. View Products and Stock");
+                System.out.println("2. Add New Product");
+                System.out.println("3. Update Stock Level");
+                System.out.println("4. View Suppliers");
+                System.out.println("5. Exit");
+                System.out.print("Enter choice: ");
+                int choice = sc.nextInt();
+                sc.nextLine();
+
+                switch (choice) {
+                    case 1:
+                        viewProducts(con);
+                        break;
+                    case 2:
+                        addProduct(con, sc);
+                        break;
+                    case 3:
+                        updateStock(con, sc);
+                        break;
+                    case 4:
+                        viewSuppliers(con);
+                        break;
+                    case 5:
+                        System.out.println("Exiting system. Goodbye!");
+                        sc.close();
+                        return;
+                    default:
+                        System.out.println("Invalid choice! Try again.");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Database error:");
+            e.printStackTrace();
+        }
+    }
+
+    static void viewProducts(Connection con) throws SQLException {
+        String query = "SELECT p.product_id, p.name, p.price, p.stock, s.name AS supplier_name " +
+                       "FROM products p LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id";
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            System.out.println("Products List:");
+            while (rs.next()) {
+                System.out.println("Product ID: " + rs.getInt("product_id") +
+                        ", Name: " + rs.getString("name") +
+                        ", Price: " + rs.getDouble("price") +
+                        ", Stock: " + rs.getInt("stock") +
+                        ", Supplier: " + rs.getString("supplier_name"));
+            }
+        }
+    }
+
+    static void addProduct(Connection con, Scanner sc) throws SQLException {
+        System.out.print("Enter Product ID (integer): ");
+        int productId = sc.nextInt();
+        sc.nextLine();
+        System.out.print("Enter Product Name: ");
+        String name = sc.nextLine();
+        System.out.print("Enter Supplier ID (must exist): ");
+        int supplierId = sc.nextInt();
+        System.out.print("Enter Price: ");
+        double price = sc.nextDouble();
+        System.out.print("Enter Initial Stock: ");
+        int stock = sc.nextInt();
+        sc.nextLine();
+
+        String insert = "INSERT INTO products (product_id, name, supplier_id, price, stock) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = con.prepareStatement(insert)) {
+            pstmt.setInt(1, productId);
+            pstmt.setString(2, name);
+            pstmt.setInt(3, supplierId);
+            pstmt.setDouble(4, price);
+            pstmt.setInt(5, stock);
+            pstmt.executeUpdate();
+            System.out.println("Product added successfully!");
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Error: Product ID or Supplier ID may not exist or already used.");
+        }
+    }
+
+    static void updateStock(Connection con, Scanner sc) throws SQLException {
+        System.out.print("Enter Product ID to update stock: ");
+        int productId = sc.nextInt();
+        System.out.print("Enter new stock quantity: ");
+        int newStock = sc.nextInt();
+
+        String update = "UPDATE products SET stock = ? WHERE product_id = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(update)) {
+            pstmt.setInt(1, newStock);
+            pstmt.setInt(2, productId);
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Stock updated successfully!");
+            } else {
+                System.out.println("Product ID not found.");
+            }
+        }
+    }
+
+    static void viewSuppliers(Connection con) throws SQLException {
+        String query = "SELECT * FROM suppliers";
+        try (Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+            System.out.println("Suppliers List:");
+            while (rs.next()) {
+                System.out.println("Supplier ID: " + rs.getInt("supplier_id") +
+                        ", Name: " + rs.getString("name") +
+                        ", Contact: " + rs.getString("contact"));
+            }
+        }
+    }
+}
