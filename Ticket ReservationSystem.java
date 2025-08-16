@@ -5,8 +5,8 @@ import java.util.Scanner;
 public class ReservationSystem 
 {
     static final String URL = "jdbc:mysql://localhost:3306/reservationdb";
-    static final String USER = "root";
-    static final String PASS = "pass123"; 
+    static final String USER = "mysql user name";
+    static final String PASS = "mysl password"; 
     static final int TOTAL_SEATS = 20;
 
     public static void main(String[] args) {
