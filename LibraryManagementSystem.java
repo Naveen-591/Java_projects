@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public class LibraryManagementSystem {
     static final String URL = "jdbc:mysql://localhost:3306/librarydb";
-    static final String USER = "root";      
-    static final String PASS = "pass123";   
+    static final String USER = "mysql user name";      
+    static final String PASS = "mysl password";   
     
     static Scanner sc = new Scanner(System.in);
 
@@ -110,4 +110,5 @@ public class LibraryManagementSystem {
         }
     }
 }
+
 
